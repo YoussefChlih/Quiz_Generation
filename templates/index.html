@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz RAG Generator - Générateur de Quiz Intelligent</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span>Quiz RAG Generator</span>
+            </div>
+            <nav class="nav">
+                <a href="#" class="nav-link active" data-section="upload">
+                    <i class="fas fa-upload"></i> Upload
+                </a>
+                <a href="#" class="nav-link" data-section="generate">
+                    <i class="fas fa-magic"></i> Générer
+                </a>
+                <a href="#" class="nav-link" data-section="quiz">
+                    <i class="fas fa-question-circle"></i> Quiz
+                </a>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section id="upload-section" class="section active">
+                <div class="section-header">
+                    <h1><i class="fas fa-file-upload"></i> Upload de Documents</h1>
+                    <p>Téléchargez vos documents pour générer des quiz intelligents</p>
+                </div>
+
+                <div class="upload-area" id="dropzone">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Glissez-déposez vos fichiers ici</h3>
+                    <p>ou</p>
+                    <label for="file-input" class="btn btn-primary">
+                        <i class="fas fa-folder-open"></i> Parcourir les fichiers
+                    </label>
+                    <input type="file" id="file-input" multiple accept=".pdf,.pptx,.ppt,.docx,.doc,.txt,.rtf" hidden>
+                    <p class="file-types">Formats supportés: PDF, PPTX, DOCX, TXT, RTF</p>
+                </div>
+
+                <div class="uploaded-files" id="uploaded-files">
+                    <h3><i class="fas fa-file-alt"></i> Documents chargés</h3>
+                    <div class="files-list" id="files-list">
+                        <p class="no-files">Aucun document chargé</p>
+                    </div>
+                    <div class="files-actions">
+                        <button class="btn btn-danger" id="clear-all-btn" style="display: none;">
+                            <i class="fas fa-trash"></i> Tout supprimer
+                        </button>
+                        <button class="btn btn-success" id="proceed-btn" style="display: none;">
+                            <i class="fas fa-arrow-right"></i> Continuer vers la génération
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Generate Section -->
+            <section id="generate-section" class="section">
+                <div class="section-header">
+                    <h1><i class="fas fa-cogs"></i> Configuration du Quiz</h1>
+                    <p>Personnalisez les paramètres de génération de votre quiz</p>
+                </div>
+
+                <div class="config-container">
+                    <div class="config-card">
+                        <h3><i class="fas fa-sliders-h"></i> Paramètres généraux</h3>
+                        
+                        <div class="form-group">
+                            <label for="num-questions">Nombre de questions</label>
+                            <div class="range-container">
+                                <input type="range" id="num-questions" min="1" max="20" value="5">
+                                <span class="range-value" id="num-questions-value">5</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="topic">Sujet spécifique (optionnel)</label>
+                            <input type="text" id="topic" placeholder="Ex: Machine Learning, Histoire de France...">
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-signal"></i> Niveau de difficulté</h3>
+                        <div class="difficulty-options" id="difficulty-options">
+                            <label class="option-card">
+                                <input type="radio" name="difficulty" value="facile">
+                                <div class="option-content">
+                                    <i class="fas fa-seedling"></i>
+                                    <span class="option-title">Facile</span>
+                                    <span class="option-desc">Questions simples et directes</span>
+                                </div>
+                            </label>
+                            <label class="option-card selected">
+                                <input type="radio" name="difficulty" value="moyen" checked>
+                                <div class="option-content">
+                                    <i class="fas fa-balance-scale"></i>
+                                    <span class="option-title">Moyen</span>
+                                    <span class="option-desc">Compréhension approfondie</span>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="difficulty" value="difficile">
+                                <div class="option-content">
+                                    <i class="fas fa-mountain"></i>
+                                    <span class="option-title">Difficile</span>
+                                    <span class="option-desc">Analyse et réflexion critique</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3><i class="fas fa-list-ul"></i> Types de questions</h3>
+                        <div class="question-types" id="question-types">
+                            <label class="checkbox-card">
+                                <input type="checkbox" name="question_type" value="qcm" checked>
+                                <div class="checkbox-content">
+                                    <i class="fas fa-check-square"></i>
+                                    <span>QCM</span>
+                                </div>
+                            </label>
+                            <label class="checkbox-card">
+                                <input type="checkbox" name="question_type" value="comprehension">
+                                <div class="checkbox-content">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>Compréhension</span>
+                                </div>
+                            </label>
+                            <label class="checkbox-card">
+                                <input type="checkbox" name="question_type" value="memorisation">
+                                <div class="checkbox-content">
+                                    <i class="fas fa-brain"></i>
+                                    <span>Mémorisation</span>
+                                </div>
+                            </label>
+                            <label class="checkbox-card">
+                                <input type="checkbox" name="question_type" value="vrai_faux">
+                                <div class="checkbox-content">
+                                    <i class="fas fa-toggle-on"></i>
+                                    <span>Vrai/Faux</span>
+                                </div>
+                            </label>
+                            <label class="checkbox-card">
+                                <input type="checkbox" name="question_type" value="reponse_courte">
+                                <div class="checkbox-content">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Réponse Courte</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="generate-actions">
+                        <button class="btn btn-primary btn-large" id="generate-btn">
+                            <i class="fas fa-magic"></i> Générer le Quiz
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section id="quiz-section" class="section">
+                <div class="section-header">
+                    <h1><i class="fas fa-question-circle"></i> <span id="quiz-title">Votre Quiz</span></h1>
+                    <p id="quiz-info">Répondez aux questions ci-dessous</p>
+                </div>
+
+                <div class="quiz-container" id="quiz-container">
+                    <div class="quiz-placeholder">
+                        <i class="fas fa-file-alt"></i>
+                        <p>Générez un quiz pour commencer</p>
+                    </div>
+                </div>
+
+                <div class="quiz-actions" id="quiz-actions" style="display: none;">
+                    <button class="btn btn-secondary" id="new-quiz-btn">
+                        <i class="fas fa-redo"></i> Nouveau Quiz
+                    </button>
+                    <button class="btn btn-primary" id="check-answers-btn">
+                        <i class="fas fa-check"></i> Vérifier les réponses
+                    </button>
+                    <button class="btn btn-success" id="export-btn">
+                        <i class="fas fa-download"></i> Exporter
+                    </button>
+                </div>
+
+                <div class="results-container" id="results-container" style="display: none;">
+                    <div class="results-card">
+                        <h3><i class="fas fa-trophy"></i> Résultats</h3>
+                        <div class="score-display">
+                            <span class="score" id="score">0</span>
+                            <span class="total">/ <span id="total">0</span></span>
+                        </div>
+                        <div class="score-bar">
+                            <div class="score-fill" id="score-fill"></div>
+                        </div>
+                        <p class="score-message" id="score-message"></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p id="loading-message">Chargement en cours...</p>
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div class="toast-container" id="toast-container"></div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
